@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from Order.models import *
 from Order.forms import *
+from django.core.mail import send_mail
 import arrow
+
+from OrderingSystem.settings import EMAIL_HOST_USER
 
 
 def home(request):
@@ -20,6 +23,10 @@ def home(request):
 
 def order_form(request):
     if request.GET.get('All Right') == 'All Right':
+        send_mail('New Order',
+                  'New Order',
+                  EMAIL_HOST_USER,
+                  ['alex.varkalov.test@gmail.com'])
         del request.session['collective_order_id']
         return redirect(home)
     if request.method == 'POST':
@@ -130,6 +137,11 @@ def edit_order(request, order_id):
         order.paid_BYN = data.get('paid_BYN')
         order.comment = data.get('comment')
         order.save()
+        message = 'Product - {0}, Comment - {1}'.format(order.product, order.comment)
+        send_mail('Your order was changed by Admin',
+                  message,
+                  EMAIL_HOST_USER,
+                  ['alex.varkalov.test@gmail.com'])
         return redirect('/orders/get_collective_order/id={0}'.format(order_id))
     else:
         order = Order.objects.filter(id=order_id).get()
@@ -146,9 +158,15 @@ def edit_order(request, order_id):
 
 
 def delete_order(request, order_id):
-    order = Order.objects.filter(id=order_id)
+    order = Order.objects.filter(id=order_id).get()
+    customer = order.customer
+    collective_order_id = order.collective_order_id
     order.delete()
-    return redirect('/orders/get_collective_order/id={0}'.format(order_id))
+    send_mail('ORDER WAS DELETED ',
+              'Order for {0} was deleted by Admin'.format(customer),
+              EMAIL_HOST_USER,
+              ['alex.varkalov.test@gmail.com'])
+    return redirect('/orders/get_collective_order/id={0}'.format(collective_order_id))
 
 
 def delete_collective_order(request, collective_order_id):
@@ -157,4 +175,8 @@ def delete_collective_order(request, collective_order_id):
     for order in orders:
         order.delete()
     collective_order.delete()
+    send_mail('COLLECTIVE ORDER WAS DELETED',
+              'Your collective order was deleted by Admin',
+              EMAIL_HOST_USER,
+              ['alex.varkalov.test@gmail.com'])
     return redirect(get_collective_orders)
