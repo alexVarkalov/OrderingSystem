@@ -30,8 +30,9 @@
         <tr><td>BYR SUM</td><td>{{ BYR_sum }}</td></tr>
         <tr><td>RESULT BYN</td><td>{{ result_BYN }}</td></tr>
     </table>
-    <form action="{% url 'home' %}" method="GET">
-        <p><input type="submit" value='Home' name='Home'></p>
+    <form action="{% url 'order_form' %}" method="GET">
+        <p><input type="submit" value='Add Order' name='Add Order'></p>
+        <p><input type="submit" value='All Right' name='All Right'></p>
     </form>
 </body>
 </html>

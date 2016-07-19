@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="dataSourceStorage">
-  <data-source name="Sqlite (Xerial) - db.sqlite3" uuid="d70c9931-f961-41a5-843b-8e1323b0f884">
+  <data-source name="Sqlite (Xerial) - db.sqlite3" uuid="21e4bd15-7945-418a-9006-33208080517f">
     <database-info product="SQLite" version="3.8.11" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native"/>
     <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed"/>
     <schema name="" catalog=""/>
+    <table name="Order_collectiveorder" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <column name="collective_order_datetime" sqlType="DATETIME" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <primary-key columns="id"/>
+    </table>
     <table name="Order_order" schema="" catalog="" type="TABLE">
       <column name="id" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
       <column name="product" sqlType="VARCHAR(30)" precision="0" scale="-1" nullable="false" jdbcType="12"/>
@@ -13,7 +18,10 @@
       <column name="paid_BYN" sqlType="REAL" precision="0" scale="-1" nullable="true" jdbcType="6"/>
       <column name="comment" sqlType="VARCHAR(300)" precision="0" scale="-1" nullable="true" jdbcType="12"/>
       <column name="order_datetime" sqlType="DATETIME" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="collective_order_id" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
       <primary-key columns="id"/>
+      <foreign-key name="#FAKE_Order_order_1" columns="collective_order_id" ref-table="Order_collectiveorder" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <index name="Order_order_7f9c2355" unique="true" columns="collective_order_id"/>
     </table>
     <table name="auth_group" schema="" catalog="" type="TABLE">
       <column name="id" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>

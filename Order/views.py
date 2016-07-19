@@ -5,7 +5,7 @@ import arrow
 
 
 def home(request):
-    if request.GET.get('New Order') == 'New Order':
+    if request.GET.get('New Order') == 'New Collect Order':
         return redirect(order_form)
     elif request.GET.get('All Orders') == 'All Orders':
         return redirect(get_orders)
@@ -14,22 +14,34 @@ def home(request):
 
 
 def order_form(request):
+    if request.GET.get('Finish') == 'Finish':
+        del request.session['collective_order_id']
+        return redirect()
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             order_datetime = arrow.utcnow()
-            order = Order.objects.create(product=data.get('product'),
-                                         customer=data.get('customer'),
-                                         email=data.get('email'),
-                                         paid_BYR=data.get('paid_BYR'),
-                                         paid_BYN=data.get('paid_BYN'),
-                                         comment=data.get('comment'),
-                                         order_datetime=order_datetime.datetime,
-                                         )
-            return redirect(home)
+            if request.session.has_key('collective_order_id'):
+                collective_order_id = request.session.get('collective_order_id')
+                collective_order = CollectiveOrder.objects.filter(id=collective_order_id).get()
+            else:
+                collective_order = CollectiveOrder.objects.create(collective_order_datetime=order_datetime.datetime)
+                request.session['collective_order_id'] = collective_order.id
+            Order.objects.create(product=data.get('product'),
+                                 customer=data.get('customer'),
+                                 email=data.get('email'),
+                                 paid_BYR=data.get('paid_BYR'),
+                                 paid_BYN=data.get('paid_BYN'),
+                                 comment=data.get('comment'),
+                                 order_datetime=order_datetime.datetime,
+                                 collective_order=collective_order,
+                                 )
+            if request.POST.get('New Order') == 'New Order':
+                return redirect(order_form)
+            elif request.POST.get('Finish') == 'Finish':
+                return redirect(get_orders)
         else:
-
             context = {'OrderForm': form}
             return render(request, 'order_form.html', context)
 
@@ -49,7 +61,8 @@ def order_form(request):
 
 
 def get_orders(request):
-    orders = Order.objects.filter()
+    collective_order_id = request.session.get('collective_order_id')
+    orders = Order.objects.filter(collective_order__id=collective_order_id)
     BYN_sum = 0
     BYR_sum = 0
     for order in orders:
@@ -57,12 +70,10 @@ def get_orders(request):
             BYN_sum += order.paid_BYN
         elif order.paid_BYR:
             BYR_sum += order.paid_BYR
-    result_BYN = BYN_sum + float(BYR_sum)/10000
+    result_BYN = BYN_sum + float(BYR_sum) / 10000
     context = {'orders': orders,
                'BYN_sum': BYN_sum,
                'BYR_sum': BYR_sum,
                'result_BYN': result_BYN
                }
     return render(request, 'get_orders.html', context)
-
-
