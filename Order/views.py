@@ -1,9 +1,6 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from Order.models import *
 from Order.forms import *
-from django import forms
-from django.core import validators
 import arrow
 
 

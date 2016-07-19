@@ -13,6 +13,6 @@ class OrderForm(forms.Form):
         cleaned_data = self.cleaned_data
         paid_BYR = cleaned_data.get('paid_BYR')
         paid_BYN = cleaned_data.get('paid_BYN')
-        if not (paid_BYR and paid_BYN):
+        if not (paid_BYR or paid_BYN):
             raise forms.ValidationError('BYR and BYN paid can not be blank together')
         return cleaned_data
