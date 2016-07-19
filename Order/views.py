@@ -5,18 +5,21 @@ import arrow
 
 
 def home(request):
-    if request.GET.get('New Order') == 'New Collect Order':
+    if request.GET.get('New Collect Order') == 'New Collect Order':
+        if request.session.has_key('collective_order_id'):
+            del request.session['collective_order_id']
         return redirect(order_form)
-    elif request.GET.get('All Orders') == 'All Orders':
-        return redirect(get_orders)
+    elif request.GET.get('All Collect Orders') == 'All Collect Orders':
+        return redirect(get_collective_orders)
     else:
-        return redirect(order_form)
+        context = {}
+        return render(request, 'home.html', context)
 
 
 def order_form(request):
-    if request.GET.get('Finish') == 'Finish':
+    if request.GET.get('All Right') == 'All Right':
         del request.session['collective_order_id']
-        return redirect()
+        return redirect(home)
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -77,3 +80,47 @@ def get_orders(request):
                'result_BYN': result_BYN
                }
     return render(request, 'get_orders.html', context)
+
+
+# ADMIN
+
+
+def get_collective_orders(request):
+    collective_orders = CollectiveOrder.objects.filter()
+    context = {'collective_orders': collective_orders}
+    return render(request, 'get_collecive_orders.html', context)
+
+
+def get_collective_order(request, collective_order_id):
+    orders = Order.objects.filter(collective_order__id=collective_order_id)
+    BYN_sum = 0
+    BYR_sum = 0
+    for order in orders:
+        if order.paid_BYN:
+            BYN_sum += order.paid_BYN
+        elif order.paid_BYR:
+            BYR_sum += order.paid_BYR
+    result_BYN = BYN_sum + float(BYR_sum) / 10000
+    context = {'orders': orders,
+               'BYN_sum': BYN_sum,
+               'BYR_sum': BYR_sum,
+               'result_BYN': result_BYN
+               }
+    return render(request, 'get_orders_admin.html', context)
+
+
+def edit_order(request, order_id):
+    return redirect(get_collective_orders)
+
+
+def delete_order(request, order_id):
+    return redirect(get_collective_orders)
+
+
+def delete_collective_order(request, collective_order_id):
+    orders = Order.objects.filter(collective_order__id=collective_order_id)
+    collective_order = CollectiveOrder.objects.filter(id=collective_order_id)
+    for order in orders:
+        order.delete()
+    collective_order.delete()
+    return redirect(get_collective_orders)

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Get Collective Orders</title>
+</head>
+<body>
+    {% csrf_token %}
+    <table border="1" cellpadding="5" cellspacing="5">
+    <tr>
+        <th>Date</th>
+    </tr>
+
+        {% for collective_order in collective_orders %}
+            <tr>
+                <td><a href="{% url 'get_collective_order' collective_order.id %}">{{ collective_order.collective_order_datetime }}</a></td>
+                <td><a href="{% url 'delete_collective_order' collective_order.id %}">Delete</a></td>
+            </tr>
+        {% endfor %}
+        <tr></tr>
+    </table>
+    <form action="{% url 'order_form' %}" method="GET">
+        <p><input type="submit" value='Home' name='Home'></p>
+    </form>
+</body>
+</html>
