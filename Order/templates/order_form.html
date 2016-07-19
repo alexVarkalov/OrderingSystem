@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Order</title>
+</head>
+<body>
+    <form action="{% url 'order_form' %}" method="POST">
+        {{ OrderForm.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="OK">
+        <p><input type="reset" name="Reset"></p>
+    </form>
+</body>
+</html>

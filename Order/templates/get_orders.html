@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Get Orders</title>
+</head>
+<body>
+    {% csrf_token %}
+    <table border="1" cellpadding="5" cellspacing="5">
+    <tr>
+        <th>Product</th>
+        <th>Customer</th>
+        <th>Paid BYR</th>
+        <th>Paid BYN</th>
+        <th>Comment</th>
+    </tr>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.product }}</td>
+                <td>{{ order.customer }}</td>
+                <td>{{ order.paid_BYR }}</td>
+                <td>{{ order.paid_BYN }}</td>
+                <td>{{ order.comment }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <form action="{% url 'home' %}" method="GET">
+        <p><input type="submit" value='Home' name='Home'></p>
+    </form>
+</body>
+</html>
