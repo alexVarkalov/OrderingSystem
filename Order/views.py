@@ -8,6 +8,8 @@ def home(request):
     if request.GET.get('New Collect Order') == 'New Collect Order':
         if request.session.has_key('collective_order_id'):
             del request.session['collective_order_id']
+        if request.session.has_key('permission'):
+            del request.session['permission']
         return redirect(order_form)
     elif request.GET.get('All Collect Orders') == 'All Collect Orders':
         return redirect(get_collective_orders)
@@ -45,18 +47,25 @@ def order_form(request):
             elif request.POST.get('Finish') == 'Finish':
                 return redirect(get_orders)
         else:
-            context = {'OrderForm': form}
+            if request.session.get('permission'):
+                context = {'OrderForm': form,
+                           'permission': True
+                           }
+            else:
+                context = {'OrderForm': form}
             return render(request, 'order_form.html', context)
 
     else:
         time = arrow.utcnow().time()
-        time = time.replace(hour=14)
+        time = time.replace(hour=13)
+        print time
         start_time = arrow.get(46800).time()
         end_time = arrow.get(54000).time()
         if time > end_time or time < start_time:
             permission = False
         else:
             permission = True
+            request.session['permission'] = True
         context = {'OrderForm': OrderForm(),
                    'permission': permission
                    }
@@ -71,7 +80,7 @@ def get_orders(request):
     for order in orders:
         if order.paid_BYN:
             BYN_sum += order.paid_BYN
-        elif order.paid_BYR:
+        if order.paid_BYR:
             BYR_sum += order.paid_BYR
     result_BYN = BYN_sum + float(BYR_sum) / 10000
     context = {'orders': orders,
@@ -98,7 +107,7 @@ def get_collective_order(request, collective_order_id):
     for order in orders:
         if order.paid_BYN:
             BYN_sum += order.paid_BYN
-        elif order.paid_BYR:
+        if order.paid_BYR:
             BYR_sum += order.paid_BYR
     result_BYN = BYN_sum + float(BYR_sum) / 10000
     context = {'orders': orders,
@@ -110,11 +119,36 @@ def get_collective_order(request, collective_order_id):
 
 
 def edit_order(request, order_id):
-    return redirect(get_collective_orders)
+    form = OrderForm(request.POST)
+    if form.is_valid():
+        data = form.cleaned_data
+        order = Order.objects.filter(id=order_id).get()
+        order.product = data.get('product')
+        order.customer = data.get('customer')
+        order.email = data.get('email')
+        order.paid_BYR = data.get('paid_BYR')
+        order.paid_BYN = data.get('paid_BYN')
+        order.comment = data.get('comment')
+        order.save()
+        return redirect('/orders/get_collective_order/id={0}'.format(order_id))
+    else:
+        order = Order.objects.filter(id=order_id).get()
+        context = {'OrderForm': OrderForm(initial={'product': order.product,
+                                                   'customer': order.customer,
+                                                   'email': order.email,
+                                                   'paid_BYR': order.paid_BYR,
+                                                   'paid_BYN': order.paid_BYN,
+                                                   'comment': order.comment
+                                                   }
+                                          ),
+                   'order_id': order_id}
+        return render(request, 'edit_order.html', context)
 
 
 def delete_order(request, order_id):
-    return redirect(get_collective_orders)
+    order = Order.objects.filter(id=order_id)
+    order.delete()
+    return redirect('/orders/get_collective_order/id={0}'.format(order_id))
 
 
 def delete_collective_order(request, collective_order_id):

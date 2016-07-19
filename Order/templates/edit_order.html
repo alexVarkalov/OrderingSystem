@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Order</title>
+</head>
+<body>
+    <form action="{% url 'edit_order' order_id %}" method="POST">
+        {% csrf_token %}
+        {{ OrderForm.as_p }}
+        <p><input type="submit" name="Change" value="Change"></p>
+    </form>
+</body>
+</html>
