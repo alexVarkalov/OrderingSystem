@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from Order.models import *
 from Order.forms import *
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 import arrow
 
 from OrderingSystem.settings import EMAIL_HOST_USER
@@ -100,13 +101,14 @@ def get_orders(request):
 
 # ADMIN
 
-
+@login_required(login_url='/accounts/login/')
 def get_collective_orders(request):
     collective_orders = CollectiveOrder.objects.filter()
     context = {'collective_orders': collective_orders}
     return render(request, 'get_collecive_orders.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def get_collective_order(request, collective_order_id):
     orders = Order.objects.filter(collective_order__id=collective_order_id)
     BYN_sum = 0
@@ -125,6 +127,7 @@ def get_collective_order(request, collective_order_id):
     return render(request, 'get_orders_admin.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def edit_order(request, order_id):
     form = OrderForm(request.POST)
     if form.is_valid():
@@ -157,6 +160,7 @@ def edit_order(request, order_id):
         return render(request, 'edit_order.html', context)
 
 
+@login_required(login_url='/accounts/login/')
 def delete_order(request, order_id):
     order = Order.objects.filter(id=order_id).get()
     customer = order.customer
@@ -169,6 +173,7 @@ def delete_order(request, order_id):
     return redirect('/orders/get_collective_order/id={0}'.format(collective_order_id))
 
 
+@login_required(login_url='/accounts/login/')
 def delete_collective_order(request, collective_order_id):
     orders = Order.objects.filter(collective_order__id=collective_order_id)
     collective_order = CollectiveOrder.objects.filter(id=collective_order_id)
