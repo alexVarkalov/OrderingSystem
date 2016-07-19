@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from Order.models import *
 from Order.forms import *
+from django import forms
+from django.core import validators
 import arrow
 
 
@@ -30,8 +32,8 @@ def order_form(request):
                                          )
             return redirect(home)
         else:
-            data = form.errors
-            return HttpResponse('valid %s' % data)
+            context = {'OrderForm': form}
+            return render(request, 'order_form.html', context)
 
     else:
         context = {'OrderForm': OrderForm()}
