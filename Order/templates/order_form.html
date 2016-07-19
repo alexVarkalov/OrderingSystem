@@ -6,10 +6,14 @@
 </head>
 <body>
     <form action="{% url 'order_form' %}" method="POST">
+    {% if permission %}
         {{ OrderForm.as_p }}
         {% csrf_token %}
         <input type="submit" value="OK">
         <p><input type="reset" name="Reset"></p>
+    {% else %}
+        <p>We do not take orders in that time. Sorry</p>
+    {% endif %}
     </form>
 </body>
 </html>

@@ -122,3 +122,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Mail
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'alex.varkalov.test@yandex.ru'
+EMAIL_HOST_PASSWORD = 'QwertY13'
+EMAIL_USE_SSL = True

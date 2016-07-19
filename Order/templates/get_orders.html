@@ -14,6 +14,7 @@
         <th>Paid BYN</th>
         <th>Comment</th>
     </tr>
+
         {% for order in orders %}
             <tr>
                 <td>{{ order.product }}</td>
@@ -23,6 +24,11 @@
                 <td>{{ order.comment }}</td>
             </tr>
         {% endfor %}
+        <tr></tr>
+
+        <tr><td>BYN SUM</td><td>{{ BYN_sum }}</td></tr>
+        <tr><td>BYR SUM</td><td>{{ BYR_sum }}</td></tr>
+        <tr><td>RESULT BYN</td><td>{{ result_BYN }}</td></tr>
     </table>
     <form action="{% url 'home' %}" method="GET">
         <p><input type="submit" value='Home' name='Home'></p>
