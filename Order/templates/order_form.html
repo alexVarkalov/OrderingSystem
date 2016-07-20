@@ -5,7 +5,7 @@
     <title>Create Order</title>
 </head>
 <body>
-    <form action="{% url 'order_form' %}" method="POST">
+<form action="{% url 'order_form' %}" method="POST">
     {% if permission %}
         {{ OrderForm.as_p }}
         {% csrf_token %}
@@ -15,9 +15,6 @@
     {% else %}
         <p>We do not take orders in that time. Sorry</p>
     {% endif %}
-    </form>
-
-
-
+</form>
 </body>
 </html>

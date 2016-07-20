@@ -1,7 +1,6 @@
 from django.conf.urls import url
 from Order.views import *
 
-
 urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^order_form/$', order_form, name='order_form'),

@@ -16,4 +16,3 @@ class OrderForm(forms.Form):
         if not (paid_BYR or paid_BYN):
             raise forms.ValidationError('BYR and BYN paid can not be blank together')
         return cleaned_data
-

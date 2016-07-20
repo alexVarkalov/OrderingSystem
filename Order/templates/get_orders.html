@@ -5,8 +5,8 @@
     <title>Get Orders</title>
 </head>
 <body>
-    {% csrf_token %}
-    <table border="1" cellpadding="5" cellspacing="5">
+{% csrf_token %}
+<table border="1" cellpadding="5" cellspacing="5">
     <tr>
         <th>Product</th>
         <th>Customer</th>
@@ -15,24 +15,33 @@
         <th>Comment</th>
     </tr>
 
-        {% for order in orders %}
-            <tr>
-                <td>{{ order.product }}</td>
-                <td>{{ order.customer }}</td>
-                <td>{{ order.paid_BYR }}</td>
-                <td>{{ order.paid_BYN }}</td>
-                <td>{{ order.comment }}</td>
-            </tr>
-        {% endfor %}
-        <tr></tr>
+    {% for order in orders %}
+        <tr>
+            <td>{{ order.product }}</td>
+            <td>{{ order.customer }}</td>
+            <td>{{ order.paid_BYR }}</td>
+            <td>{{ order.paid_BYN }}</td>
+            <td>{{ order.comment }}</td>
+        </tr>
+    {% endfor %}
+    <tr></tr>
 
-        <tr><td>BYN SUM</td><td>{{ BYN_sum }}</td></tr>
-        <tr><td>BYR SUM</td><td>{{ BYR_sum }}</td></tr>
-        <tr><td>RESULT BYN</td><td>{{ result_BYN }}</td></tr>
-    </table>
-    <form action="{% url 'order_form' %}" method="GET">
-        <p><input type="submit" value='Add Order' name='Add Order'></p>
-        <p><input type="submit" value='All Right' name='All Right'></p>
-    </form>
+    <tr>
+        <td>BYN SUM</td>
+        <td>{{ BYN_sum }}</td>
+    </tr>
+    <tr>
+        <td>BYR SUM</td>
+        <td>{{ BYR_sum }}</td>
+    </tr>
+    <tr>
+        <td>RESULT BYN</td>
+        <td>{{ result_BYN }}</td>
+    </tr>
+</table>
+<form action="{% url 'order_form' %}" method="GET">
+    <p><input type="submit" value='Add Order' name='Add Order'></p>
+    <p><input type="submit" value='All Right' name='All Right'></p>
+</form>
 </body>
 </html>

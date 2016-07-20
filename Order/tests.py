@@ -162,4 +162,3 @@ class TestOrder(TestCase):
             status_code = result.status_code
             self.assertEquals(status_code, 200)
             self.assertEquals(result_BYN, content)
-

@@ -5,8 +5,8 @@
     <title>Get Orders Admin</title>
 </head>
 <body>
-    {% csrf_token %}
-    <table border="1" cellpadding="5" cellspacing="5">
+{% csrf_token %}
+<table border="1" cellpadding="5" cellspacing="5">
     <tr>
         <th>Product</th>
         <th>Customer</th>
@@ -15,26 +15,35 @@
         <th>Comment</th>
     </tr>
 
-        {% for order in orders %}
-            <tr>
-                <td>{{ order.product }}</td>
-                <td>{{ order.customer }}</td>
-                <td>{{ order.paid_BYR }}</td>
-                <td>{{ order.paid_BYN }}</td>
-                <td>{{ order.comment }}</td>
-                <td><a href="{% url 'edit_order' order.id %}">Edit</a></td>
-                <td><a href="{% url 'delete_order' order.id %}">Delete</a></td>
+    {% for order in orders %}
+        <tr>
+            <td>{{ order.product }}</td>
+            <td>{{ order.customer }}</td>
+            <td>{{ order.paid_BYR }}</td>
+            <td>{{ order.paid_BYN }}</td>
+            <td>{{ order.comment }}</td>
+            <td><a href="{% url 'edit_order' order.id %}">Edit</a></td>
+            <td><a href="{% url 'delete_order' order.id %}">Delete</a></td>
 
-            </tr>
-        {% endfor %}
-        <tr></tr>
+        </tr>
+    {% endfor %}
+    <tr></tr>
 
-        <tr><td>BYN SUM</td><td>{{ BYN_sum }}</td></tr>
-        <tr><td>BYR SUM</td><td>{{ BYR_sum }}</td></tr>
-        <tr><td>RESULT BYN</td><td>{{ result_BYN }}</td></tr>
-    </table>
-    <form action="{% url 'get_collective_orders' %}" method="GET">
-        <p><input type="submit" value='Back to Collective Orders' name='Back to Collective Orders'></p>
-    </form>
+    <tr>
+        <td>BYN SUM</td>
+        <td>{{ BYN_sum }}</td>
+    </tr>
+    <tr>
+        <td>BYR SUM</td>
+        <td>{{ BYR_sum }}</td>
+    </tr>
+    <tr>
+        <td>RESULT BYN</td>
+        <td>{{ result_BYN }}</td>
+    </tr>
+</table>
+<form action="{% url 'get_collective_orders' %}" method="GET">
+    <p><input type="submit" value='Back to Collective Orders' name='Back to Collective Orders'></p>
+</form>
 </body>
 </html>

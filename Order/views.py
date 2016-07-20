@@ -9,13 +9,13 @@ from OrderingSystem.settings import EMAIL_HOST_USER
 
 
 def home(request):
-    if request.GET.get('New Collect Order') == 'New Collect Order':
+    if request.GET.get('New Collective Order') == 'New Collective Order':
         if request.session.has_key('collective_order_id'):
             del request.session['collective_order_id']
         if request.session.has_key('permission'):
             del request.session['permission']
         return redirect(order_form)
-    elif request.GET.get('All Collect Orders') == 'All Collect Orders':
+    elif request.GET.get('All Collective Orders') == 'All Collective Orders':
         return redirect(get_collective_orders)
     else:
         context = {}
@@ -64,9 +64,8 @@ def order_form(request):
             return render(request, 'order_form.html', context)
 
     else:
-        time = arrow.utcnow().time()
-        time = time.replace(hour=13)
-        print time
+        time = arrow.utcnow().to('Europe/Minsk').time()
+        # time = time.replace(hour=13)
         start_time = arrow.get(46800).time()
         end_time = arrow.get(54000).time()
         if time > end_time or time < start_time:
@@ -145,7 +144,8 @@ def edit_order(request, order_id):
                   message,
                   EMAIL_HOST_USER,
                   ['alex.varkalov.test@gmail.com'])
-        return redirect('/orders/get_collective_order/id={0}'.format(order_id))
+
+        return redirect('/orders/get_collective_order/id={0}'.format(order.collective_order_id))
     else:
         order = Order.objects.filter(id=order_id).get()
         context = {'OrderForm': OrderForm(initial={'product': order.product,
