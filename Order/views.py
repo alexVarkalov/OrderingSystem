@@ -163,13 +163,15 @@ def edit_order(request, order_id):
 @login_required(login_url='/accounts/login/')
 def delete_order(request, order_id):
     order = Order.objects.filter(id=order_id).get()
-    customer = order.customer
     collective_order_id = order.collective_order_id
-    order.delete()
     send_mail('ORDER WAS DELETED ',
-              'Order for {0} was deleted by Admin'.format(customer),
+              'Order for {0} was deleted by Admin'.format(order.customer),
               EMAIL_HOST_USER,
-              ['alex.varkalov.test@gmail.com'])
+              [order.email])
+    order.delete()
+    if not Order.objects.filter(collective_order__id=collective_order_id):
+        CollectiveOrder.objects.filter(id=collective_order_id).delete()
+        return redirect(get_collective_orders)
     return redirect('/orders/get_collective_order/id={0}'.format(collective_order_id))
 
 
@@ -178,10 +180,11 @@ def delete_collective_order(request, collective_order_id):
     orders = Order.objects.filter(collective_order__id=collective_order_id)
     collective_order = CollectiveOrder.objects.filter(id=collective_order_id)
     for order in orders:
+        send_mail('ORDER WAS DELETED',
+                  'Order for {0} was deleted by Admin'.format(order.customer),
+                  EMAIL_HOST_USER,
+                  [order.email])
         order.delete()
     collective_order.delete()
-    send_mail('COLLECTIVE ORDER WAS DELETED',
-              'Your collective order was deleted by Admin',
-              EMAIL_HOST_USER,
-              ['alex.varkalov.test@gmail.com'])
+
     return redirect(get_collective_orders)
